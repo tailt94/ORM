@@ -49,6 +49,9 @@
     <Compile Include="DataAccess\DbAccess.cs" />
     <Compile Include="DataAttributes\ColumnAttribute.cs" />
     <Compile Include="Examples\Customer.cs" />
+    <Compile Include="Expressions\ComplexExpression.cs" />
+    <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Expressions\SimpleExpression.cs" />
     <Compile Include="Factories\DbFactory.cs" />
     <Compile Include="Factories\DbFactoryProducer.cs" />
     <Compile Include="Factories\OleDbFactory.cs" />

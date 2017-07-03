@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ORM.Factories;
 using ORM.DataAttributes;
 using ORM.Libs;
+using ORM.Expressions;
 
 namespace ORM.DataAccess
 {
@@ -75,7 +76,7 @@ namespace ORM.DataAccess
         /// </summary>
         /// <param name="dataObject">Object needs to insert</param>
         /// <param name="tableName">Name of the table</param>
-        /// <returns></returns>
+        /// <returns>True - Insert succeed; False - Insert Fail</returns>
         public bool Insert(IDataModel dataObject,  string tableName)
         {
             try
@@ -99,6 +100,68 @@ namespace ORM.DataAccess
                 DbCommand cmd = factory.GetCommand();
                 cmd.Connection = conn;
                 cmd.CommandText = insertString;
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        ///     Update data table
+        /// </summary>
+        /// <param name="dataObject">Object needs to update</param>
+        /// <param name="tableName">Name of the table</param>
+        /// <param name="exp">Expression of WHERE clause</param>
+        /// <returns>True - Update succeed; False - Update fail</returns>
+        public bool Update(IDataModel dataObject, string tableName, Expression exp)
+        {
+            try
+            {
+                string setValues = "";
+
+                Type type = dataObject.GetType();
+                FieldInfo[] fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                foreach (FieldInfo field in fields)
+                {
+                    Attribute attr = Attribute.GetCustomAttribute(field, typeof(ColumnAttribute));
+                    setValues += attr.ToString() + "=" + Util.FormatSqlValue(field.GetValue(dataObject)) + ",";
+                }
+                setValues = setValues.TrimEnd(',');
+
+                string updateString = $"UPDATE {tableName} SET {setValues} WHERE {exp.ToString()}";
+
+                DbCommand cmd = factory.GetCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = updateString;
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        ///     Delete data from table
+        /// </summary>
+        /// <param name="tableName">Name of the table</param>
+        /// <param name="exp">Expression of WHERE clause</param>
+        /// <returns>True - Delete succeed; False - Delete fail</returns>
+        public bool Delete(string tableName, Expression exp)
+        {
+            try
+            {
+                string deleteString = $"DELETE FROM {tableName} WHERE {exp.ToString()}";
+
+                DbCommand cmd = factory.GetCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = deleteString;
 
                 cmd.ExecuteNonQuery();
             }
