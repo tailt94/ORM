@@ -63,9 +63,8 @@ namespace ORM
             DbAccess dbAccess = new DbAccess(factory);
             dbAccess.OpenConnection(connString);
 
-            Customer customer = new Customer(112, "Trinity");
-            Expression exp = new SimpleExpression<string, string>("name", "Alex", Expression.LIKE);
-            Console.WriteLine(dbAccess.Update(customer, "Customers", exp));
+            Expression exp = new SimpleExpression<string, string>("name", "Ngoc", Expression.LIKE);
+            Console.WriteLine(dbAccess.Delete("Customers", exp));
             dbAccess.CloseConnection();
 
 

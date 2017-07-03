@@ -146,5 +146,30 @@ namespace ORM.DataAccess
             }
             return true;
         }
+
+        /// <summary>
+        ///     Delete data from table
+        /// </summary>
+        /// <param name="tableName">Name of the table</param>
+        /// <param name="exp">Expression of WHERE clause</param>
+        /// <returns>True - Delete succeed; False - Delete fail</returns>
+        public bool Delete(string tableName, Expression exp)
+        {
+            try
+            {
+                string deleteString = $"DELETE FROM {tableName} WHERE {exp.ToString()}";
+
+                DbCommand cmd = factory.GetCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = deleteString;
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
