@@ -13,6 +13,7 @@ namespace ORM.Expressions
         public const string GREATER_EQUAL = ">=";
         public const string LESS_EQUAL = "<=";
         public const string NOT_EQUAL = "<>";
+        public const string LIKE = "LIKE";
 
         public const string AND = "AND";
         public const string OR = "OR";

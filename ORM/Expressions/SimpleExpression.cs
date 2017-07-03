@@ -21,7 +21,7 @@ namespace ORM.Expressions
 
         public override string ToString()
         {
-            return left.ToString() + op + Util.FormatSqlValue(right);
+            return left.ToString() + " " + op + " " + Util.FormatSqlValue(right);
         }
     }
 }
