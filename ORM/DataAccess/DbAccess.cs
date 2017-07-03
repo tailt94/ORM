@@ -171,5 +171,70 @@ namespace ORM.DataAccess
             }
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataObjectType"></param>
+        /// <param name="tableName"></param>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public List<IDataModel> Select<T>(Type dataObjectType, string tableName, Expression exp = null)
+        {
+            List<IDataModel> list = new List<IDataModel>();
+            DbDataReader dataReader = null;
+
+            try
+            {
+                string columns = "";
+                FieldInfo[] fields = dataObjectType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+                foreach (FieldInfo field in fields)
+                {
+                    Attribute attr = Attribute.GetCustomAttribute(field, typeof(ColumnAttribute));
+                    columns += attr.ToString() + ",";
+                }
+                columns = columns.TrimEnd(',');
+                
+                string selectString = (exp == null) ? $"SELECT {columns} FROM {tableName}" :
+                        $"SELECT {columns} FROM {tableName} WHERE {exp.ToString()}";
+
+                DbCommand cmd = factory.GetCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = selectString;
+
+                dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    T dataObject = (T)Activator.CreateInstance(dataObjectType);
+                    for (int i = 0; i < dataReader.FieldCount; i++)
+                    {
+                        foreach (FieldInfo field in fields)
+                        {
+                            Attribute attr = Attribute.GetCustomAttribute(field, typeof(ColumnAttribute));
+                            if (attr.ToString() == dataReader.GetName(i))
+                            {
+                                field.SetValue(dataObject, dataReader[i]);
+                            }
+                        }
+                    }
+                    list.Add((IDataModel) dataObject);
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+            }
+            return list;
+        }
     }
 }

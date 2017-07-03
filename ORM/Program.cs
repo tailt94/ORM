@@ -51,7 +51,25 @@ namespace ORM
             //Console.WriteLine(dbAccess.Update(customer, "Customers", exp));
             //dbAccess.CloseConnection();
 
+
             //-----DEMO - DELETE
+            //DbFactory factory = DbFactoryProducer.GetFactory("SQL");
+            //ConnectionString connString = new ConnectionString.Builder()
+            //    .DataSource("(local)")
+            //    .DbName("testdb")
+            //    .Id("admin")
+            //    .Password("admin")
+            //    .Build();
+
+            //DbAccess dbAccess = new DbAccess(factory);
+            //dbAccess.OpenConnection(connString);
+
+            //Expression exp = new SimpleExpression<string, string>("name", "Ngoc", Expression.LIKE);
+            //Console.WriteLine(dbAccess.Delete("Customers", exp));
+            //dbAccess.CloseConnection();
+
+
+            //-----DEMO - SELECT
             DbFactory factory = DbFactoryProducer.GetFactory("SQL");
             ConnectionString connString = new ConnectionString.Builder()
                 .DataSource("(local)")
@@ -63,10 +81,12 @@ namespace ORM
             DbAccess dbAccess = new DbAccess(factory);
             dbAccess.OpenConnection(connString);
 
-            Expression exp = new SimpleExpression<string, string>("name", "Ngoc", Expression.LIKE);
-            Console.WriteLine(dbAccess.Delete("Customers", exp));
+            List<IDataModel> list = dbAccess.Select<Customer>(typeof(Customer), "Customers");
+            foreach (var item in list)
+            {
+                Console.WriteLine(item);
+            }
             dbAccess.CloseConnection();
-
 
 
             //Expression e1 = new SimpleExpression<string, int>("id", 5, Expression.GREATER_EQUAL);
