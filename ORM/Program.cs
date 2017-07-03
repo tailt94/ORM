@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ORM.DataAccess;
 using ORM.Factories;
 using ORM.Examples;
+using ORM.Expressions;
 
 namespace ORM
 {
@@ -25,13 +26,21 @@ namespace ORM
                 .Build();
 
             DbAccess dbAccess = new DbAccess(factory);
-            dbAccess.OpenConnection(connString); 
+            dbAccess.OpenConnection(connString);
 
             Customer customer = new Customer(69, "Trang");
             Console.WriteLine(dbAccess.Insert(customer, "Customers"));
             dbAccess.CloseConnection();
-            
-            Console.Read();
+
+            //Expression e1 = new SimpleExpression<string, int>("id", 5, Expression.GREATER_EQUAL);
+            //Expression e2 = new SimpleExpression<string, string>("name", "Lan", Expression.EQUAL);
+            //Expression ex = new ComplexExpression(e1, e2, Expression.OR);
+
+            //Expression e3 = new SimpleExpression<string, int>("i", 21, Expression.LESS_THAN);
+            //Expression ee = new ComplexExpression(e3, ex, Expression.AND);
+            //Console.WriteLine(ee);
+
+            Console.ReadKey();
         }
     }
 }
