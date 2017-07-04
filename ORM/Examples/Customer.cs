@@ -11,19 +11,24 @@ namespace ORM.Examples
 {
     class Customer : IDataModel
     {
-        [Column("id")]
-        private int myId;
+        [Column("ID")]
+        private int id;
 
-        [Column("name")]
-        private string myName;
+        [Column("Name")]
+        private string name;
+        
+        [Column("Age")]
+        private int age;
 
-        public int MyId { get => myId; set => myId = value; }
-        public string MyName { get => myName; set => myName = value; }
+        [Column("City")]
+        private string city;
 
-        public Customer(int id, string name)
+        public Customer(int id, string name, int age, string city)
         {
-            this.myId = id;
-            this.myName = name;
+            this.id = id;
+            this.name = name;
+            this.age = age;
+            this.city = city;
         }
 
         public Customer()
@@ -31,9 +36,14 @@ namespace ORM.Examples
 
         }
 
+        public int Id { get => id; set => id = value; }
+        public string Name { get => name; set => name = value; }
+        public int Age { get => age; set => age = value; }
+        public string City { get => city; set => city = value; }
+
         public override string ToString()
         {
-            string r = myId.ToString() + " - " + myName;
+            string r = id.ToString() + " - " + name + " - " + age.ToString() + " - " + city;
             return r;
         }
     }

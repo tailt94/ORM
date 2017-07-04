@@ -174,16 +174,16 @@ namespace ORM.DataAccess
         }
 
         /// <summary>
-        /// 
+        ///     Get list of data object
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="dataObjectType"></param>
-        /// <param name="tableName"></param>
-        /// <param name="exp"></param>
-        /// <returns></returns>
-        public List<IDataModel> Select<T>(Type dataObjectType, string tableName, Expression exp = null)
+        /// <typeparam name="T">Type of model class</typeparam>
+        /// <param name="tableName">Name of the table</param>
+        /// <param name="exp">Expression of WHERE clause</param>
+        /// <returns>List of data object</returns>
+        public List<T> Select<T>(string tableName, Expression exp = null) where T : IDataModel
         {
-            List<IDataModel> list = new List<IDataModel>();
+            Type dataObjectType = typeof(T);
+            List<T> list = new List<T>();
             DbDataReader dataReader = null;
 
             try
@@ -197,7 +197,7 @@ namespace ORM.DataAccess
                     columns += attr.ToString() + ",";
                 }
                 columns = columns.TrimEnd(',');
-                
+
                 string selectString = (exp == null) ? $"SELECT {columns} FROM {tableName}" :
                         $"SELECT {columns} FROM {tableName} WHERE {exp.ToString()}";
 
@@ -221,12 +221,12 @@ namespace ORM.DataAccess
                             }
                         }
                     }
-                    list.Add((IDataModel) dataObject);
+                    list.Add(dataObject);
                 }
             }
             catch (Exception)
             {
-                
+
             }
             finally
             {

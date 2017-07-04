@@ -29,7 +29,7 @@ namespace ORM
             //DbAccess dbAccess = new DbAccess(factory);
             //dbAccess.OpenConnection(connString);
 
-            //Customer customer = new Customer(69, "Trang");
+            //Customer customer = new Customer(69, "Trang", 25, "Ho Chi Minh");
             //Console.WriteLine(dbAccess.Insert(customer, "Customers"));
             //dbAccess.CloseConnection();
 
@@ -46,8 +46,8 @@ namespace ORM
             //DbAccess dbAccess = new DbAccess(factory);
             //dbAccess.OpenConnection(connString);
 
-            //Customer customer = new Customer(112, "Trinity");
-            //Expression exp = new SimpleExpression<string, string>("name", "Alex", Expression.LIKE);
+            //Customer customer = new Customer(111, "Trinity", 33, "New York");
+            //Expression exp = new SimpleExpression<string, string>("name", "Lam", Expression.LIKE);
             //Console.WriteLine(dbAccess.Update(customer, "Customers", exp));
             //dbAccess.CloseConnection();
 
@@ -64,7 +64,7 @@ namespace ORM
             //DbAccess dbAccess = new DbAccess(factory);
             //dbAccess.OpenConnection(connString);
 
-            //Expression exp = new SimpleExpression<string, string>("name", "Ngoc", Expression.LIKE);
+            //Expression exp = new SimpleExpression<string, int>("ID", 69, Expression.EQUAL);
             //Console.WriteLine(dbAccess.Delete("Customers", exp));
             //dbAccess.CloseConnection();
 
@@ -81,21 +81,12 @@ namespace ORM
             DbAccess dbAccess = new DbAccess(factory);
             dbAccess.OpenConnection(connString);
 
-            List<IDataModel> list = dbAccess.Select<Customer>(typeof(Customer), "Customers");
+            List<Customer> list = dbAccess.Select<Customer>("Customers");
             foreach (var item in list)
             {
                 Console.WriteLine(item);
             }
             dbAccess.CloseConnection();
-
-
-            //Expression e1 = new SimpleExpression<string, int>("id", 5, Expression.GREATER_EQUAL);
-            //Expression e2 = new SimpleExpression<string, string>("name", "Lan", Expression.EQUAL);
-            //Expression ex = new ComplexExpression(e1, e2, Expression.OR);
-
-            //Expression e3 = new SimpleExpression<string, int>("i", 21, Expression.LESS_THAN);
-            //Expression ee = new ComplexExpression(e3, ex, Expression.AND);
-            //Console.WriteLine(ee);
 
             Console.ReadKey();
         }
