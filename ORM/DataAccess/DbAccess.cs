@@ -153,11 +153,12 @@ namespace ORM.DataAccess
         /// <param name="tableName">Name of the table</param>
         /// <param name="exp">Expression of WHERE clause</param>
         /// <returns>True - Delete succeed; False - Delete fail</returns>
-        public bool Delete(string tableName, Expression exp)
+        public bool Delete(string tableName, Expression exp = null)
         {
             try
             {
-                string deleteString = $"DELETE FROM {tableName} WHERE {exp.ToString()}";
+                string deleteString = (exp == null) ? $"DELETE FROM {tableName}"
+                        : $"DELETE FROM {tableName} WHERE {exp.ToString()}";
 
                 DbCommand cmd = factory.GetCommand();
                 cmd.Connection = conn;

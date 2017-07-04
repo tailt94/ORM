@@ -12,6 +12,9 @@ namespace ORM.Expressions
         private L left;
         private R right;
 
+        public L Left { get => left; set => left = value; }
+        public R Right { get => right; set => right = value; }
+
         public SimpleExpression(L left, R right, string op)
         {
             this.left = left;
