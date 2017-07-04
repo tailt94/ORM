@@ -153,11 +153,12 @@ namespace ORM.DataAccess
         /// <param name="tableName">Name of the table</param>
         /// <param name="exp">Expression of WHERE clause</param>
         /// <returns>True - Delete succeed; False - Delete fail</returns>
-        public bool Delete(string tableName, Expression exp)
+        public bool Delete(string tableName, Expression exp = null)
         {
             try
             {
-                string deleteString = $"DELETE FROM {tableName} WHERE {exp.ToString()}";
+                string deleteString = (exp == null) ? $"DELETE FROM {tableName}"
+                        : $"DELETE FROM {tableName} WHERE {exp.ToString()}";
 
                 DbCommand cmd = factory.GetCommand();
                 cmd.Connection = conn;
@@ -170,6 +171,71 @@ namespace ORM.DataAccess
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        ///     Get list of data object
+        /// </summary>
+        /// <typeparam name="T">Type of model class</typeparam>
+        /// <param name="tableName">Name of the table</param>
+        /// <param name="exp">Expression of WHERE clause</param>
+        /// <returns>List of data object</returns>
+        public List<T> Select<T>(string tableName, Expression exp = null) where T : IDataModel
+        {
+            Type dataObjectType = typeof(T);
+            List<T> list = new List<T>();
+            DbDataReader dataReader = null;
+
+            try
+            {
+                string columns = "";
+                FieldInfo[] fields = dataObjectType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+                foreach (FieldInfo field in fields)
+                {
+                    Attribute attr = Attribute.GetCustomAttribute(field, typeof(ColumnAttribute));
+                    columns += attr.ToString() + ",";
+                }
+                columns = columns.TrimEnd(',');
+
+                string selectString = (exp == null) ? $"SELECT {columns} FROM {tableName}" :
+                        $"SELECT {columns} FROM {tableName} WHERE {exp.ToString()}";
+
+                DbCommand cmd = factory.GetCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = selectString;
+
+                dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    T dataObject = (T)Activator.CreateInstance(dataObjectType);
+                    for (int i = 0; i < dataReader.FieldCount; i++)
+                    {
+                        foreach (FieldInfo field in fields)
+                        {
+                            Attribute attr = Attribute.GetCustomAttribute(field, typeof(ColumnAttribute));
+                            if (attr.ToString() == dataReader.GetName(i))
+                            {
+                                field.SetValue(dataObject, dataReader[i]);
+                            }
+                        }
+                    }
+                    list.Add(dataObject);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+            }
+            return list;
         }
     }
 }

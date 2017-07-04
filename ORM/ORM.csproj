@@ -43,9 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\ConnectionString.cs" />
-    <Compile Include="DataAccess\DataField.cs" />
     <Compile Include="DataAccess\IDataModel.cs" />
-    <Compile Include="DataAccess\DataTable.cs" />
     <Compile Include="DataAccess\DbAccess.cs" />
     <Compile Include="DataAttributes\ColumnAttribute.cs" />
     <Compile Include="Examples\Customer.cs" />
